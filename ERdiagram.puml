@@ -1,0 +1,71 @@
+@startuml ERdiagram
+' Impostazioni visive per chiarezza
+skinparam linetype ortho
+
+' 1. Tabella SIMULATION
+' Contiene i metadati della sessione di simulazione
+entity "Simulation" as Simulation {
+    * simId : INTEGER <<PK>>
+    --
+    + simDate : TEXT (ISO8601)
+}
+
+' 2. Tabella BODY (Entità)
+' Rappresenta l'esistenza dell'oggetto e lo collega alla simulazione
+entity "Body" as Body {
+    * bodyId : INTEGER <<PK>>
+    --
+    # simId : INTEGER <<FK>>
+}
+
+' Relazione: Una Simulazione contiene molti Body
+Simulation ||..o{ Body : contains
+
+
+' 3. COMPONENTI (Dati)
+' Ogni componente usa bodyId sia come Chiave Primaria che come Chiave Esterna
+' Questo forza la relazione 1-a-1 con il Body
+
+entity "PositionComponent" as Position {
+    * bodyId : INTEGER <<PK, FK>>
+    --
+    + PosX : REAL
+    + PosY : REAL
+    + PosZ : REAL
+}
+
+entity "VelocityComponent" as Velocity {
+    * bodyId : INTEGER <<PK, FK>>
+    --
+    + VelX : REAL
+    + VelY : REAL
+    + VelZ : REAL
+}
+
+entity "AccelerationComponent" as Acceleration {
+    * bodyId : INTEGER <<PK, FK>>
+    --
+    + AccX : REAL
+    + AccY : REAL
+    + AccZ : REAL
+}
+
+entity "MassComponent" as Mass {
+    * bodyId : INTEGER <<PK, FK>>
+    --
+    + mass : REAL
+}
+entity "NameComponent" as Name {
+    * bodyId : INTEGER <<PK, FK>>
+    --
+    + name : TEXT
+}
+
+' Relazioni: Un Body HA esattamente un'istanza di questi componenti (se presenti)
+Body ||--|| Position : has
+Body ||--|| Velocity : has
+Body ||--|| Acceleration : has
+Body ||--|| Mass : has
+Body ||--|| Name : has
+
+@enduml
