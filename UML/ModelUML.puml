@@ -1,0 +1,121 @@
+@startuml ECS_Pattern
+
+' Entity-Component-System UML Structure for Java
+
+'RealVector in apache commons math4
+'https://commons.apache.org/proper/commons-math/javadocs/api-4.0/org/apache/commons/math4/linear/RealVector.html
+'ArrayList in java.util
+'https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/ArrayList.html
+'Integration methods in apache commons math4
+'https://commons.apache.org/proper/commons-math/commons-math-docs/apidocs/org/apache/commons/math4/legacy/ode/nonstiff/package-summary.html-
+
+'LocalDateTime in java.time
+'https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/LocalDateTime.html
+
+'------ECS BASE-------
+class Entity {
+    +id: int
+}
+
+interface Component {
+}
+
+interface System {
+    +update(components: ArrayList<Component>)
+}
+'------Strategia orientata ai Dati------
+
+interface ComponentsStorage {
+    +attach(component: Component) : void
+    +delete( entity: Entity) : void
+    +save() : void
+    }
+'usare singleton pattern in Java per implementare questa classe 
+class GravityComponentStorage implements ComponentsStorage {
+    +positionComponents: ArrayList<PositionComponent>
+    +velocityComponents: ArrayList<VelocityComponent>
+    +accelerationComponents: ArrayList<AccelerationComponent>
+    +massComponents: ArrayList<MassComponent>
+    +attach(entity: Entity, component: Component)
+    +delete(entity: Entity, component: Component)
+
+}
+
+'---------Components (Dati)----------
+class PositionComponent implements Component {
+    +position: RealVector 
+}
+
+class VelocityComponent implements Component {
+    +velocity: RealVector
+}
+
+class AccelerationComponent implements Component {
+    +acceleration: RealVector
+}
+
+class NameComponent implements Component {
+    +name: String
+}
+
+class MassComponent implements Component {
+    +mass: double
+}
+
+
+'-------"Variabili Globali"-------
+'Usare Singleton pattern in Java per implementare questa classe
+class ApplicationVariables <<Singleton>> {
+    +timeStep: double 
+    +startTime: LocalDateTime
+    +currentTime: LocalDateTime
+    +integrationAlgorithm: IntegrationStrategy
+}
+
+'-----------Systems (Logica)--------------
+class GravitySystem implements System {
+    +update(MassComponent, PositionComponent, AccelerationComponent)
+    -NewtonsLaw(MassComponent, PositionComponent, AccelerationComponent)
+}
+class GravityIntegratorSystem implements System {
+    +update(PositionComponent, VelocityComponent, AccelerationComponent)
+    -integrate(IntegrationStrategy, function, derivative)
+}
+
+'-----Associazioni e Composizioni-----
+Entity "1" o-- "*" Component : has
+ComponentsStorage "1" *-- "*" Component : stores
+System  ..> ComponentsStorage : operates on
+ComponentsStorage ..> Entity : <<associates>>
+GravityComponentStorage "1" *-- "*" PositionComponent : stores
+GravityComponentStorage "1" *-- "*" VelocityComponent : stores
+GravityComponentStorage "1" *-- "*" AccelerationComponent : stores
+GravityComponentStorage "1" *-- "*" MassComponent : stores
+GravityComponentStorage "1" *-- "*" NameComponent : stores
+ApplicationVariables "1" -- "1" IntegrationStrategy : contains
+'-----Relazioni di Flusso dei Dati------
+
+
+
+
+GravitySystem ..> GravityComponentStorage : <<reads/writes>>
+GravityIntegratorSystem ..> GravityComponentStorage : <<reads/writes>>
+
+
+'-----Strategy per Integratore------
+interface IntegrationStrategy {
+    +integrate(function, derivative)
+}
+GravityIntegratorSystem ..|> IntegrationStrategy : uses
+
+class EulerIntegration implements IntegrationStrategy {
+    #integrate(function, derivative, step)
+    + name : "Euler Integration Method"
+}
+class RK4Integration implements IntegrationStrategy {
+    #integrate(function, derivative, step, order)
+    + name : "Runge-Kutta 4th Order Method"
+}
+
+
+@enduml
