@@ -1,0 +1,59 @@
+@startuml ECS_Pattern
+
+' Entity-Component-System UML Structure for Java
+'------ECS BASE-------
+class Entity {
+    +id: int
+}
+
+interface Component {
+}
+
+interface System {
+    +update(components: List<Component>)
+}
+
+'---------Components (Dati)----------
+class PositionComponent implements Component {
+    +position: RealVector
+}
+
+class VelocityComponent implements Component {
+    +velocity: RealVector
+}
+
+class AccelerationComponent implements Component {
+    +acceleration: RealVector
+}
+
+class NameComponent implements Component {
+    +name: String
+}
+
+class MassComponent implements Component {
+    +mass: double
+}
+
+'-----------Systems (Logica)--------------
+class GravitySystem implements System {
+    +update(MassComponent, PositionComponent, AccelerationComponent)
+    -NewtonsLaw(MassComponent, PositionComponent, AccelerationComponent)
+}
+class IntegratorSystem implements System {
+    +update(PositionComponent, VelocityComponent, AccelerationComponent)
+    -IntegrationStrategy(PositionComponent, VelocityComponent, AccelerationComponent)
+}
+
+'-----Associazioni e Composizioni-----
+Entity "1" o-- "*" Component : has
+
+'-----Relazioni di Flusso dei Dati------
+GravitySystem ..> PositionComponent : <<reads>>
+GravitySystem ..> MassComponent : <<reads>>
+GravitySystem ..> AccelerationComponent : <<writes>>
+
+IntegratorSystem ..> AccelerationComponent : <<reads>>
+IntegratorSystem ..> VelocityComponent : <<reads/writes>>
+IntegratorSystem ..> PositionComponent : <<writes>>
+
+@enduml
