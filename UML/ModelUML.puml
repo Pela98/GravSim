@@ -38,6 +38,7 @@ class GravityComponentStorage implements ComponentsStorage {
     +massComponents: ArrayList<MassComponent>
     +attach(entity: Entity, component: Component)
     +delete(entity: Entity, component: Component)
+    +save() : void
 
 }
 
@@ -74,8 +75,9 @@ class ApplicationVariables <<Singleton>> {
 
 '-----------Systems (Logica)--------------
 class GravitySystem implements System {
-    +update(MassComponent, PositionComponent, AccelerationComponent)
-    -NewtonsLaw(MassComponent, PositionComponent, AccelerationComponent)
+
+    +update(GravityComponentStorage : GravityComponentStorage) :void
+    -NewtonsLaw(MassComponent, PositionComponent, index) : RealVector
 }
 class GravityIntegratorSystem implements System {
     +update(PositionComponent, VelocityComponent, AccelerationComponent)
@@ -83,7 +85,7 @@ class GravityIntegratorSystem implements System {
 }
 
 '-----Associazioni e Composizioni-----
-Entity "1" o-- "*" Component : has
+
 ComponentsStorage "1" *-- "*" Component : stores
 System  ..> ComponentsStorage : operates on
 ComponentsStorage ..> Entity : <<associates>>
@@ -92,7 +94,7 @@ GravityComponentStorage "1" *-- "*" VelocityComponent : stores
 GravityComponentStorage "1" *-- "*" AccelerationComponent : stores
 GravityComponentStorage "1" *-- "*" MassComponent : stores
 GravityComponentStorage "1" *-- "*" NameComponent : stores
-ApplicationVariables "1" -- "1" IntegrationStrategy : contains
+ApplicationVariables "1" *-- "1" IntegrationStrategy : contains
 '-----Relazioni di Flusso dei Dati------
 
 
@@ -106,7 +108,7 @@ GravityIntegratorSystem ..> GravityComponentStorage : <<reads/writes>>
 interface IntegrationStrategy {
     +integrate(function, derivative)
 }
-GravityIntegratorSystem ..|> IntegrationStrategy : uses
+GravityIntegratorSystem ..> IntegrationStrategy : uses
 
 class EulerIntegration implements IntegrationStrategy {
     #integrate(function, derivative, step)
@@ -116,6 +118,29 @@ class RK4Integration implements IntegrationStrategy {
     #integrate(function, derivative, step, order)
     + name : "Runge-Kutta 4th Order Method"
 }
+'-----DAO Pattern for Persistence------
+interface DAO<T> {
+    +create(item: T) : void
+    +read(id: int) : T
+    +update(item: T) : void
+    +delete(id: int) : void
+}
 
+class ComponentStorageDAO implements DAO<ComponentsStorage> {
+    +create(item: ComponentsStorage) : void
+    +read(id: int) : ComponentsStorage
+    +update(item: ComponentsStorage) : void
+    +delete(id: int) : void
+}
+
+class ApplicationVariablesDAO implements DAO<ApplicationVariables> {
+    +create(item: ApplicationVariables) : void
+    +read(id: int) : ApplicationVariables
+    +update(item: ApplicationVariables) : void
+    +delete(id: int) : void
+}
+
+ComponentStorageDAO ..> ComponentsStorage : persists (CRUD operations)
+ApplicationVariablesDAO ..> ApplicationVariables : persists (CRUD operations)
 
 @enduml
