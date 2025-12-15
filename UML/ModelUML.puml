@@ -110,14 +110,29 @@ interface IntegrationStrategy {
 }
 GravityIntegratorSystem ..> IntegrationStrategy : uses
 
-class EulerIntegration implements IntegrationStrategy {
-    #integrate(function, derivative, step)
-    + name : "Euler Integration Method"
+'-----Concrete Integration Strategies with Adapter Pattern------
+interface IntegrationAdapter {
+    +adapt() : ODEIntegrator
 }
-class RK4Integration implements IntegrationStrategy {
-    #integrate(function, derivative, step, order)
-    + name : "Runge-Kutta 4th Order Method"
+
+class EulerIntegrationAdapter implements IntegrationStrategy, IntegrationAdapter {
+    -apacheEuler: EulerIntegrator
+    +name : "Euler Integration Method"
+    +integrate(function, derivative, step): void
+    -adapt() : ODEIntegrator
+    
 }
+
+class RK4IntegrationAdapter implements IntegrationStrategy, IntegrationAdapter {
+    -apacheRK4: ClassicalRungeKuttaIntegrator
+    +name : "Runge-Kutta 4th Order Method"
+    +integrate(function, derivative, step, order): void
+    -adapt() : ODEIntegrator
+    
+}
+
+EulerIntegrationAdapter ..> "org.apache.commons.math4.legacy.ode.nonstiff.EulerIntegrator" : adapts
+RK4IntegrationAdapter ..> "org.apache.commons.math4.legacy.ode.nonstiff.ClassicalRungeKuttaIntegrator" : adapts
 '-----DAO Pattern for Persistence------
 interface DAO<T> {
     +create(item: T) : void
