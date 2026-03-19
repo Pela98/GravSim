@@ -1,7 +1,7 @@
 package Model;
 
 public  class AccelerationComponent {
-    protected double ax;
-    protected double ay;
-    protected double az;
+    double ax;
+    double ay;
+    double az;
 }

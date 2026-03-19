@@ -1,7 +1,7 @@
 package Model;
 
 public class VelocityComponent {
-    protected double vx;
-    protected double vy;
-    protected double vz;
+    double vx;
+    double vy;
+    double vz;
 }
