@@ -1,6 +1,6 @@
 package Model;
 
-public class PositionComponent {
+public class PositionComponent implements Component {
     double x;
     double y;
     double z;

@@ -1,161 +1,61 @@
-@startuml ECS_Pattern
+@startuml ModelUML
 
-' Entity-Component-System UML Structure for Java
-
-'RealVector in apache commons math4
-'https://commons.apache.org/proper/commons-math/javadocs/api-4.0/org/apache/commons/math4/linear/RealVector.html
-'ArrayList in java.util
-'https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/ArrayList.html
-'Integration methods in apache commons math4
-'https://commons.apache.org/proper/commons-math/commons-math-docs/apidocs/org/apache/commons/math4/legacy/ode/nonstiff/package-summary.html-
-
-'LocalDateTime in java.time
-'https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/LocalDateTime.html
-
-'------ECS BASE-------
-class Entity {
-    +id: int
+'Interfacce per pattern ECS
+interface Component{
 }
-
-interface Component {
+interface System{
+    ~void update(Simulation sim)
 }
-
-interface System {
-    +update(components: ArrayList<Component>)
+'Classi Component
+class PositionComponent implements Component{
+    ~double x
+    ~double y
+    ~double z
 }
-'------Strategia orientata ai Dati------
+class VelocityComponent implements Component{
+    ~double vx
+    ~double vy
+    ~double vz
+}
+class AccelerationComponent implements Component{
+    ~double ax
+    ~double ay
+    ~double az
+}
+class MassComponent implements Component{
+    ~double mass
+}
+class NameComponent implements Component{
+    ~String name
+}
+'ComponentManager (gestione dei componenti)
+class ComponentManager {
 
-interface ComponentsStorage {
-    +attach(component: Component) : void
-    +delete( entity: Entity) : void
-    +save() : void
+        - int size
+        - int lastIndex
+        - boolean isFull()
+        - boolean isScarce()
+        - void grow()
+        - void resize(int newSize)
+        - void shrink()
+        + void addComponent(Class<T> component)
+        ~ <T extends Component> T[] getComponent(Class<T> component)
+        + <T extends Component> T[] getSafeComponent(Class<T> component)
+        + int addEntity(Component... components)
+        + void deleteEntity(int entityId)
     }
-'usare singleton pattern in Java per implementare questa classe 
-class GravityComponentStorage implements ComponentsStorage {
-    +positionComponents: ArrayList<PositionComponent>
-    +velocityComponents: ArrayList<VelocityComponent>
-    +accelerationComponents: ArrayList<AccelerationComponent>
-    +massComponents: ArrayList<MassComponent>
-    +attach(entity: Entity, component: Component)
-    +delete(entity: Entity, component: Component)
-    +save() : void
+    ComponentManager [Class] --> "*" Component : - storage
 
-}
-
-'---------Components (Dati)----------
-class PositionComponent implements Component {
-    +position: RealVector 
-}
-
-class VelocityComponent implements Component {
-    +velocity: RealVector
-}
-
-class AccelerationComponent implements Component {
-    +acceleration: RealVector
-}
-
-class NameComponent implements Component {
-    +name: String
-}
-
-class MassComponent implements Component {
-    +mass: double
-}
-
-
-'-------"Variabili Globali"-------
-'Usare Singleton pattern in Java per implementare questa classe
-class ApplicationVariables <<Singleton>> {
-    +timeStep: double 
-    +startTime: LocalDateTime
-    +currentTime: LocalDateTime
-    +integrationAlgorithm: IntegrationStrategy
-}
-
-'-----------Systems (Logica)--------------
-class GravitySystem implements System {
-
-    +update(GravityComponentStorage : GravityComponentStorage) :void
-    -NewtonsLaw(MassComponent, PositionComponent, index) : RealVector
-}
-class GravityIntegratorSystem implements System {
-    +update(PositionComponent, VelocityComponent, AccelerationComponent)
-    -integrate(IntegrationStrategy, function, derivative)
-}
-
-'-----Associazioni e Composizioni-----
-
-ComponentsStorage "1" *-- "*" Component : stores
-System  ..> ComponentsStorage : operates on
-ComponentsStorage ..> Entity : <<associates>>
-GravityComponentStorage "1" *-- "*" PositionComponent : stores
-GravityComponentStorage "1" *-- "*" VelocityComponent : stores
-GravityComponentStorage "1" *-- "*" AccelerationComponent : stores
-GravityComponentStorage "1" *-- "*" MassComponent : stores
-GravityComponentStorage "1" *-- "*" NameComponent : stores
-ApplicationVariables "1" *-- "1" IntegrationStrategy : contains
-'-----Relazioni di Flusso dei Dati------
-
-
-
-
-GravitySystem ..> GravityComponentStorage : <<reads/writes>>
-GravityIntegratorSystem ..> GravityComponentStorage : <<reads/writes>>
-
-
-'-----Strategy per Integratore------
-interface IntegrationStrategy {
-    +integrate(function, derivative)
-}
-GravityIntegratorSystem ..> IntegrationStrategy : uses
-
-'-----Concrete Integration Strategies with Adapter Pattern------
-interface IntegrationAdapter {
-    +adapt() : ODEIntegrator
-}
-
-class EulerIntegrationAdapter implements IntegrationStrategy, IntegrationAdapter {
-    -apacheEuler: EulerIntegrator
-    +name : "Euler Integration Method"
-    +integrate(function, derivative, step): void
-    -adapt() : ODEIntegrator
-    
-}
-
-class RK4IntegrationAdapter implements IntegrationStrategy, IntegrationAdapter {
-    -apacheRK4: ClassicalRungeKuttaIntegrator
-    +name : "Runge-Kutta 4th Order Method"
-    +integrate(function, derivative, step, order): void
-    -adapt() : ODEIntegrator
-    
-}
-
-EulerIntegrationAdapter ..> "org.apache.commons.math4.legacy.ode.nonstiff.EulerIntegrator" : adapts
-RK4IntegrationAdapter ..> "org.apache.commons.math4.legacy.ode.nonstiff.ClassicalRungeKuttaIntegrator" : adapts
-'-----DAO Pattern for Persistence------
-interface DAO<T> {
-    +create(item: T) : void
-    +read(id: int) : T
-    +update(item: T) : void
-    +delete(id: int) : void
-}
-
-class ComponentStorageDAO implements DAO<ComponentsStorage> {
-    +create(item: ComponentsStorage) : void
-    +read(id: int) : ComponentsStorage
-    +update(item: ComponentsStorage) : void
-    +delete(id: int) : void
-}
-
-class ApplicationVariablesDAO implements DAO<ApplicationVariables> {
-    +create(item: ApplicationVariables) : void
-    +read(id: int) : ApplicationVariables
-    +update(item: ApplicationVariables) : void
-    +delete(id: int) : void
-}
-
-ComponentStorageDAO ..> ComponentsStorage : persists (CRUD operations)
-ApplicationVariablesDAO ..> ApplicationVariables : persists (CRUD operations)
+    'Simulation (Contiene tutti i dati per istanza di simulazione)
+    class Simulation {
+        - double timeStep
+        - LocalDateTime currentDate
+        - LocalDateTime targetDate
+        - double currentTime
+        - double targetTime
+    }
+    Simulation "1" *-- "1" ComponentManager : - componentManager
+    Simulation "1" o-- "many" System : - systemsQueue
+    System --> Simulation : updates
 
 @enduml

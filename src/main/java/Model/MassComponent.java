@@ -1,5 +1,5 @@
 package Model;
 
-public class MassComponent {
+public class MassComponent implements Component {
     double mass;
 }

@@ -1,6 +1,6 @@
 package Model;
 
-public  class AccelerationComponent {
+public  class AccelerationComponent implements Component {
     double ax;
     double ay;
     double az;
