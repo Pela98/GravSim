@@ -5,12 +5,15 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public final class ComponentManager {
+    //--Attributi--
+
     // Storage mappa ciascuno degli Array dei Component al nome del Component concreto
     private HashMap<Class<? extends Component>,Component[]> storage = new HashMap<>();
     // size e lastIndex servono per riallocare l'array quando è pieno assicurandosi di tenere i dati sempre in posizioni contigue in memoria
     private int size = 10;
     private int lastIndex = 0;
 
+    //--Metodi--
 
     // Utilizzati per verificare se gli array sono pieni o quasi vuoti
     private boolean isFull() {return lastIndex >= size;}
@@ -33,6 +36,7 @@ public final class ComponentManager {
         this.size = newSize;
     }
 
+
     // Utilizzato per rimuovere spazio inutilizzato
     private void shrink(){
         int newSize = size / 2;
@@ -46,6 +50,8 @@ public final class ComponentManager {
         Component[] newComponent = new Component[this.size];
         storage.put(component, newComponent);
     }
+
+    public int getLastIndex() {return lastIndex;}
 
     // Questo metodo viene utilizzato dai System per operare direttamente sui dati (Accesso Veloce)
     @SuppressWarnings("unchecked")
