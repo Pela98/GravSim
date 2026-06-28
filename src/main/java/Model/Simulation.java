@@ -1,7 +1,7 @@
 package Model;
 
 import java.time.LocalDateTime;
-import java.util.ArrayDeque;
+
 import java.util.Queue;
 
 public class Simulation {
@@ -27,6 +27,7 @@ public class Simulation {
 
     //---Metodi---
 
+    public double getTimestep(){ return dt;}
     public ComponentManager getComponentManager() {return this.manager;}
 
     public void addPrecondition(SimulationSystem system) {
