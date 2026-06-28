@@ -1,7 +1,7 @@
-package Model
+package Model;
 
 
-class EulerIntegrationSystem implements System {
+class EulerIntegrationSystem implements SimulationSystem {
     void update(Simulation sim){
         ComponentManager cm=sim.getComponentManager();
         int n=cm.getLastIndex();

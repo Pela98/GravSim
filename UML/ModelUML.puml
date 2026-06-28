@@ -4,7 +4,7 @@
 interface Component{
 }
 interface System{
-    ~void update(Simulation sim)
+    ~ update(sim:Simulation):T[]
 }
 'Classi Component
 class PositionComponent implements Component{
@@ -35,14 +35,14 @@ class ComponentManager {
         - int lastIndex
         - boolean isFull()
         - boolean isScarce()
-        - void grow()
-        - void resize(int newSize)
-        - void shrink()
-        + void addComponent(Class<T> component)
-        ~ <T extends Component> T[] getComponent(Class<T> component)
-        + <T extends Component> T[] getSafeComponent(Class<T> component)
-        + int addEntity(Component... components)
-        + void deleteEntity(int entityId)
+        - grow():void 
+        - resize(newSize:int):void 
+        - shrink():void 
+        + addComponent(component:Class<T>):void
+        ~ <T extends Component> getComponent(component:Class<T>):T[] 
+        + <T extends Component> getSafeComponent(component:Class<T>):T[]
+        + addEntity(Component... components):int 
+        + deleteEntity(int entityId):void 
     }
     ComponentManager [Class] --> "*" Component : - storage
 
@@ -57,5 +57,15 @@ class ComponentManager {
     Simulation "1" *-- "1" ComponentManager : - componentManager
     Simulation "1" o-- "many" System : - systemsQueue
     System --> Simulation : updates
+    'Sistemi motore fisico
+    class NewtonLawSystem implements System{
+        - double G
+        ~ update(sim:Simulation):void
+    }
+    class IntegrationSystem implements System{
+        ~ update(sim:Simulation):void
+    }
+    'Builder pattern per creare istanze di simulazione
+
 
 @enduml

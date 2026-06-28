@@ -42,19 +42,21 @@ public class Simulation {
         postconditionsQueue.add(system);
     }
 
-    Simulation(ComponentManager manager, double dt, LocalDateTime localDate, LocalDateTime targetDate) {
+    Simulation(ComponentManager manager, double dt, LocalDateTime localDate, LocalDateTime targetDate,
+               Queue<SimulationSystem> preconditionsQueue, Queue<SimulationSystem> causesQueue,
+               Queue<SimulationSystem> effectsQueue, Queue<SimulationSystem> postconditionsQueue) {
         this.manager = manager;
         this.dt = dt;
         this.localDate = localDate;
         this.targetDate = targetDate;
         this.totalElapsedTime = 0;
         this.targetTime = 0;
+        this.preconditionsQueue = preconditionsQueue;
+        this.causesQueue = causesQueue;
+        this.effectsQueue = effectsQueue;
+        this.postconditionsQueue = postconditionsQueue;
 
-        // Inizializzazione code usando ArrayDeque (performante, senza overhead)
-        this.preconditionsQueue = new ArrayDeque<>();
-        this.causesQueue = new ArrayDeque<>();
-        this.effectsQueue = new ArrayDeque<>();
-        this.postconditionsQueue = new ArrayDeque<>();
+        
     }
     
 }

@@ -69,7 +69,7 @@ public final class ComponentManager {
     }
 
     // Metodo per aggiungere Entità
-    public int addEntity(Component... components) {
+    public void addEntity(Component... components) {
         if (isFull())
             grow();
         int entityId = lastIndex;
@@ -88,7 +88,6 @@ public final class ComponentManager {
 
         }
         lastIndex++;
-        return entityId;
     }
 
     //Metodo per rimuovere Entità con metodo Swap & Pop
