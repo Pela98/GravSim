@@ -3,7 +3,7 @@
 'Interfacce per pattern ECS
 interface Component{
 }
-interface System{
+interface SimulationSystem{
     ~ update(sim:Simulation):T[]
 }
 'Classi Component
@@ -55,17 +55,22 @@ class ComponentManager {
         - double targetTime
     }
     Simulation "1" *-- "1" ComponentManager : - componentManager
-    Simulation "1" o-- "many" System : - systemsQueue
-    System --> Simulation : updates
+    Simulation "1" o-- "many" SimulationSystem : - systemsQueue
+    SimulationSystem --> Simulation : updates
     'Sistemi motore fisico
-    class NewtonLawSystem implements System{
+    class NewtonLawSystem implements SimulationSystem{
         - double G
         ~ update(sim:Simulation):void
     }
-    class IntegrationSystem implements System{
+    class EulerIntegrationSystem implements SimulationSystem{
+        ~ update(sim:Simulation):void
+    }
+    class ClearAccelerationSystem implements SimulationSystem {
         ~ update(sim:Simulation):void
     }
     'Builder pattern per creare istanze di simulazione
-
+    class SimulationBuilder {
+        -ComponentManager componentManager
+    }
 
 @enduml
