@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 import java.util.Queue;
 
-public class Simulation {
+public class Simulation implemments Runnable {
     //---Attribiti---
 
     //Motore dei Dati

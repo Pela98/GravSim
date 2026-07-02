@@ -1,5 +1,5 @@
 package Model;
 
-public interface SimulationSystem {
+interface SimulationSystem {
     void update(Simulation sim);
 }

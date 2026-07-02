@@ -53,10 +53,18 @@ class ComponentManager {
         - LocalDateTime targetDate
         - double currentTime
         - double targetTime
+        -Queue<SimulationSystem> preconditionsQueue
+        -Queue<SimulationSystem> causesQueue
+        -Queue<SimulationSystem> effectsQueue
+        -Queue<SimulationSystem> postConditionsQueue
+        +addPrecondition(system:SimulationSystem):void
+        +addCause(system:SimulationSystem):void
+        +addEffect(system:SimulationSystem):void
+        +addPostCondition(system:SimulationSystem):void
     }
     Simulation "1" *-- "1" ComponentManager : - componentManager
     Simulation "1" o-- "many" SimulationSystem : - systemsQueue
-    SimulationSystem --> Simulation : updates
+    SimulationSystem --> Simulation : update():Simulation
     'Sistemi motore fisico
     class NewtonLawSystem implements SimulationSystem{
         - double G
@@ -71,6 +79,21 @@ class ComponentManager {
     'Builder pattern per creare istanze di simulazione
     class SimulationBuilder {
         -ComponentManager componentManager
-    }
+        -Double dt
+        -LocalDateTime localDate
+        -LocalDateTime targetDate
+        -Queue<SimulationSystem> preconditionsQueue
+        -Queue<SimulationSystem> causesQueue
+        -Queue<SimulationSystem> effectsQueue
+        -Queue<SimulationSystem> postConditionsQueue
+    }    
+    SimulationBuilder --> Simulation : +build():Simulation
 
+    
+    'Entity Factory per creare entità
+    class EntityFactory {
+        + createEntity(cm:ComponentManager,components:Component[]):void
+        + createDefaultScenario(cm:ComponentManager, factory:EntityFactory):void
+    }
+    EntityFactory --> ComponentManager: uses
 @enduml

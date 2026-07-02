@@ -2,7 +2,7 @@ package Model;
 
 
 class EulerIntegrationSystem implements SimulationSystem {
-    public void update(Simulation sim){
+    void update(Simulation sim){
         ComponentManager cm=sim.getComponentManager();
         int n=cm.getLastIndex();
         PositionComponent[] positions=cm.getComponent(PositionComponent.class);
