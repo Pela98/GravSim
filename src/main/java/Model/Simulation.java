@@ -8,7 +8,7 @@ import java.util.Queue;
 public class Simulation implements Runnable {
     //---Attribiti---
 
-    boolean running = false;
+    private boolean running = false;
     //Motore dei Dati
     private final ComponentManager manager;
     //Quanto Temporale
@@ -36,6 +36,9 @@ public class Simulation implements Runnable {
         for (SimulationSystem sys : queue) {
             sys.update(this);
         }
+    }
+    public boolean isRunning(){
+        return this.running;
     }
     public double getTimestep(){ return dt;}
     public ComponentManager getComponentManager() {return this.manager;}
