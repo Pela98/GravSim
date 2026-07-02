@@ -3,7 +3,7 @@ package Model;
 
 class NewtonsLawSystem implements SimulationSystem {
 
-    update(Simulation sim){
+    public void update(Simulation sim){
         final double G=6.67430e-11; // Gravitational constant in m^3 kg^-1 s^-2
         final double minimunDistance=1.0e6; // Minimum distance to avoid singularity in meters
         ComponentManager cm=sim.getComponentManager();

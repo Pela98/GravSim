@@ -1,7 +1,7 @@
 package Model;
 
 
-class EntityFactory {
+public class EntityFactory {
     public void createBasicPhysicsBody(ComponentManager cm, String name, double x, double y, double z, double vx, double vy, double vz, double mass) {
         PositionComponent position = new PositionComponent();
         position.x = x;

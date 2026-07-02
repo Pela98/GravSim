@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-class SimulationBuilder {
+public class SimulationBuilder {
     //--Attributi--
     private final ComponentManager componentManager = new ComponentManager();
     private double dt = 60.0;

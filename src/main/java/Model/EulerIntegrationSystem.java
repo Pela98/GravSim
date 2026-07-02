@@ -2,7 +2,7 @@ package Model;
 
 
 class EulerIntegrationSystem implements SimulationSystem {
-    void update(Simulation sim){
+    public void update(Simulation sim){
         ComponentManager cm=sim.getComponentManager();
         int n=cm.getLastIndex();
         PositionComponent[] positions=cm.getComponent(PositionComponent.class);
@@ -10,6 +10,8 @@ class EulerIntegrationSystem implements SimulationSystem {
         AccelerationComponent[] accelerations=cm.getComponent(AccelerationComponent.class);
         double dt=sim.getTimestep();
         for (int i=0;i<n;i++){
+            if(positions[i]==null||velocities[i]==null||accelerations[i]==null)
+                continue;
             velocities[i].vx+=accelerations[i].ax*dt;
             velocities[i].vy+=accelerations[i].ay*dt;
             velocities[i].vz+=accelerations[i].az*dt;

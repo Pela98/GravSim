@@ -1,7 +1,7 @@
 package Model;
 
 class ClearAccelerationSystem implements SimulationSystem {
-    void update(Simulation sim) {
+    public void update(Simulation sim) {
         ComponentManager cm = sim.getComponentManager();
         AccelerationComponent[] accelerations = cm.getComponent(AccelerationComponent.class);
         int n = cm.getLastIndex();

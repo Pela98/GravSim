@@ -1,12 +1,14 @@
 package Model;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 import java.util.Queue;
 
-public class Simulation implemments Runnable {
+public class Simulation implements Runnable {
     //---Attribiti---
 
+    boolean running = false;
     //Motore dei Dati
     private final ComponentManager manager;
     //Quanto Temporale
@@ -27,6 +29,14 @@ public class Simulation implemments Runnable {
 
     //---Metodi---
 
+    private double secondsBetween(LocalDateTime start, LocalDateTime end) {
+        return Duration.between(start, end).toSeconds();
+    }
+    private void executeQueue(Queue<SimulationSystem> queue) {
+        for (SimulationSystem sys : queue) {
+            sys.update(this);
+        }
+    }
     public double getTimestep(){ return dt;}
     public ComponentManager getComponentManager() {return this.manager;}
 
@@ -41,6 +51,21 @@ public class Simulation implemments Runnable {
     }
     public void addPostcondition(SimulationSystem system) {
         postconditionsQueue.add(system);
+    }
+    public void run(){
+        this.running = true;
+        totalElapsedTime = 0;
+        targetTime = secondsBetween(localDate, targetDate);
+
+        while (running && totalElapsedTime < targetTime && !Thread.currentThread().isInterrupted()) {
+            executeQueue(preconditionsQueue);
+            executeQueue(causesQueue);
+            executeQueue(effectsQueue);
+            executeQueue(postconditionsQueue);
+            totalElapsedTime += dt;
+        }
+       localDate = localDate.plusSeconds((long)totalElapsedTime);
+
     }
 
     Simulation(ComponentManager manager, double dt, LocalDateTime localDate, LocalDateTime targetDate,
