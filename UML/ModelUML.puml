@@ -47,7 +47,7 @@ class ComponentManager {
     ComponentManager [Class] --> "*" Component : - storage
 
     'Simulation (Contiene tutti i dati per istanza di simulazione)
-    class Simulation {
+    + class Simulation  implements java.lang.Runnable{
         - double timeStep
         - LocalDateTime currentDate
         - LocalDateTime targetDate
@@ -92,7 +92,7 @@ class ComponentManager {
     
     'Entity Factory per creare entità
     class EntityFactory {
-        + createEntity(cm:ComponentManager,components:Component[]):void
+        + createBasicPhisicsBody(cm:ComponentManager,components:Component[]):void
         + createDefaultScenario(cm:ComponentManager, factory:EntityFactory):void
     }
     EntityFactory --> ComponentManager: uses

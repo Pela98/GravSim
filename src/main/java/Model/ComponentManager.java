@@ -58,15 +58,8 @@ public final class ComponentManager {
     <T extends Component> T[] getComponent(Class<T> component) {
         return (T[]) storage.get(component);
     }
-    
-    // Metodo sicuro per le classi esterne al pacchetto
-    public <T extends Component> T[] getSafeComponent(Class<T> component) {
-        T[] original = getComponent(component);
-        if (original == null) {
-            return null;
-        }
-        return java.util.Arrays.copyOf(original, original.length);
-    }
+
+
 
     // Metodo per aggiungere Entità
     public void addEntity(Component... components) {
@@ -89,6 +82,7 @@ public final class ComponentManager {
         }
         lastIndex++;
     }
+
 
     //Metodo per rimuovere Entità con metodo Swap & Pop
     public void deleteEntity(int entityId) {

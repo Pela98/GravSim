@@ -8,6 +8,10 @@ import java.util.Queue;
 public class Simulation implements Runnable {
     //---Attribiti---
 
+    //Stato Thread-Safe
+    SimulationState lastState;
+
+    //Flag del Thread
     private boolean running = false;
     //Motore dei Dati
     private final ComponentManager manager;
@@ -55,8 +59,11 @@ public class Simulation implements Runnable {
     public void addPostcondition(SimulationSystem system) {
         postconditionsQueue.add(system);
     }
+    public void stop(){
+        running = false;
+    }
     public void run(){
-        this.running = true;
+        running = true;
         totalElapsedTime = 0;
         targetTime = secondsBetween(localDate, targetDate);
 
