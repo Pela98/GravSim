@@ -41,11 +41,19 @@ public class Simulation implements Runnable {
             sys.update(this);
         }
     }
+
+
+    ComponentManager getComponentManager() {return this.manager;}
+
+    void setState(SimulationState state) {
+        this.lastState = state;
+    }
+
     public boolean isRunning(){
         return this.running;
     }
     public double getTimestep(){ return dt;}
-    public ComponentManager getComponentManager() {return this.manager;}
+
 
     public void addPrecondition(SimulationSystem system) {
         preconditionsQueue.add(system);
