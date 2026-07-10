@@ -4,7 +4,7 @@
 interface Component{
 }
 interface SimulationSystem{
-    ~ update(sim:Simulation):T[]
+    ~ update(sim:Simulation):void
 }
 'Classi Component
 class PositionComponent implements Component{
@@ -38,11 +38,11 @@ class ComponentManager {
         - grow():void 
         - resize(newSize:int):void 
         - shrink():void 
-        + addComponent(component:Class<T>):void
+        ~ addComponent(component:Class<T>):void
         ~ <T extends Component> getComponent(component:Class<T>):T[] 
-        + <T extends Component> getSafeComponent(component:Class<T>):T[]
-        + addEntity(Component... components):int 
-        + deleteEntity(int entityId):void 
+
+        ~ addEntity(Component... components):int
+        ~ deleteEntity(int entityId):void
     }
     ComponentManager [Class] --> "*" Component : - storage
 
@@ -91,9 +91,22 @@ class ComponentManager {
 
     
     'Entity Factory per creare entità
-    class EntityFactory {
-        + createBasicPhisicsBody(cm:ComponentManager,components:Component[]):void
-        + createDefaultScenario(cm:ComponentManager, factory:EntityFactory):void
+    + class EntityFactory {
+        + <<static>> createBasicPhisicsBody(sim:Simulation,components:Component[]):void
+
     }
-    EntityFactory --> ComponentManager: uses
+    EntityFactory --> Simulation: edits
+    'Simulation Factory per creare Simulazioni
+    + class SimulationFactory{
+        + <<static>> createBasicPhisicsSimulation(dt:double, localDate:LocalDateTime, targetDate:LocalDateTime):Simulation
+    }
+    SimulationFactory --> SimulationBuilder : uses
+    SimulationFactory --> Simulation : instantiates
+
+    'Interfaccia per i dati all'esterno del pacchetto
+    + interface SimulationState{
+    + getLastState():SimulationState
+    }
+    Simulation *-- SimulationState
+
 @enduml
