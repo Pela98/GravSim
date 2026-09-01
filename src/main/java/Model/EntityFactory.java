@@ -2,7 +2,7 @@ package Model;
 
 
 public class EntityFactory {
-    public static void createBasicPhysicsBody(ComponentManager cm, String name, double x, double y, double z, double vx, double vy, double vz, double mass) {
+    public static void createBasicPhysicsBody(Simulation sim, String name, double x, double y, double z, double vx, double vy, double vz, double mass) {
         PositionComponent position = new PositionComponent();
         position.x = x;
         position.y = y;
@@ -16,7 +16,7 @@ public class EntityFactory {
         MassComponent massComponent = new MassComponent();
         massComponent.mass = mass;
 
-        cm.addEntity(position, nameComponent, velocity, massComponent);
+        sim.getComponentManager().addEntity(position, nameComponent, velocity, massComponent);
     }
 
 }

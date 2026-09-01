@@ -29,6 +29,8 @@ public class BasicRenderSystem implements SimulationSystem{
         AccelerationComponent[] accelerations= sim.getComponentManager().getComponent(AccelerationComponent.class);
         List<BasicPhysicsBodyDTO> bodies= new ArrayList<BasicPhysicsBodyDTO>();
         for(int i=0; i<sim.getComponentManager().getLastIndex(); i++){
+            if(positions[i]==null||velocities[i]==null||masses[i]==null||names[i]==null||accelerations[i]==null)
+                continue;
             String name=names[i].name;
             double mass=masses[i].mass;
             double positionX=positions[i].x;
